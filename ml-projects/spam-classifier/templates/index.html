@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spam SMS Classifier - ML Demo</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Josefin Sans", sans-serif;
+        background: linear-gradient(135deg, #0a0a23 0%, #1a1a4e 100%);
+        color: #fff;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 560px;
+        width: 100%;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+      }
+      h1 {
+        text-align: center;
+        font-size: 28px;
+        margin-bottom: 8px;
+      }
+      h1 span {
+        color: #f9004d;
+      }
+      .subtitle {
+        text-align: center;
+        color: #aaa;
+        margin-bottom: 30px;
+        font-weight: 300;
+      }
+      .badge {
+        display: inline-block;
+        background: rgba(249, 0, 77, 0.15);
+        color: #ff6b6b;
+        border: 1px solid #f9004d;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+      textarea {
+        width: 100%;
+        min-height: 120px;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        color: #fff;
+        font-family: inherit;
+        font-size: 16px;
+        resize: vertical;
+        margin-bottom: 20px;
+      }
+      textarea:focus {
+        outline: none;
+        border-color: #f9004d;
+        box-shadow: 0 0 0 3px rgba(249, 0, 77, 0.2);
+      }
+      .buttons {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 25px;
+      }
+      button {
+        flex: 1;
+        padding: 14px;
+        background: #f9004d;
+        color: #fff;
+        border: 2px solid transparent;
+        border-radius: 30px;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: inherit;
+      }
+      button:hover {
+        background: transparent;
+        border-color: #f9004d;
+        color: #f9004d;
+      }
+      .result {
+        text-align: center;
+        padding: 20px;
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: 600;
+        display: none;
+      }
+      .result.spam {
+        background: rgba(249, 0, 77, 0.15);
+        border: 1px solid #f9004d;
+        color: #ff6b6b;
+      }
+      .result.ham {
+        background: rgba(0, 200, 120, 0.15);
+        border: 1px solid #00c878;
+        color: #4ecdc4;
+      }
+      .confidence {
+        margin-top: 8px;
+        font-size: 14px;
+        font-weight: 400;
+        opacity: 0.8;
+      }
+      .loading {
+        text-align: center;
+        color: #aaa;
+        display: none;
+        margin-bottom: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Spam <span>SMS</span> Classifier</h1>
+      <p class="subtitle">Machine Learning demo — Naive Bayes + TF-IDF</p>
+      <span class="badge">Live model: ~98% accuracy</span>
+
+      <label for="message">Enter a message:</label>
+      <textarea
+        id="message"
+        placeholder="Type a message... e.g. 'Congratulations! You have won a free iPhone. Click the link now!'"
+      ></textarea>
+
+      <div class="buttons">
+        <button onclick="analyze()">Analyze</button>
+        <button style="background: transparent; border-color: #f9004d; color:#f9004d" onclick="clearIt()">Clear</button>
+      </div>
+
+      <div id="loading" class="loading">Analyzing...</div>
+      <div id="result" class="result"></div>
+    </div>
+
+    <script>
+      async function analyze() {
+        const msg = document.getElementById("message").value.trim();
+        const result = document.getElementById("result");
+
+        if (!msg) {
+          result.style.display = "block";
+          result.className = "result";
+          result.innerHTML = "Please enter a message first.";
+          return;
+        }
+
+        document.getElementById("loading").style.display = "block";
+        result.style.display = "none";
+
+        try {
+          const res = await fetch("/predict", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: msg }),
+          });
+          const data = await res.json();
+
+          if (data.error) throw new Error(data.error);
+
+          document.getElementById("loading").style.display = "none";
+          result.style.display = "block";
+          result.className = `result ${data.prediction.toLowerCase()}`;
+          result.innerHTML = `
+            <strong>${data.prediction}</strong>
+            <div class="confidence">Confidence: ${Math.round(
+              data.confidence * 100
+            )}%</div>
+          `;
+        } catch (err) {
+          document.getElementById("loading").style.display = "none";
+          result.style.display = "block";
+          result.className = "result";
+          result.innerHTML = "Error: " + err.message;
+        }
+      }
+
+      function clearIt() {
+        document.getElementById("message").value = "";
+        const result = document.getElementById("result");
+        result.style.display = "none";
+        result.className = "result";
+      }
+    </script>
+  </body>
+</html>
