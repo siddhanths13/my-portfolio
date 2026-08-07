@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Handwritten Digit Recognizer</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        font-family: "Josefin Sans", sans-serif;
+        background: linear-gradient(135deg, #0a0a23 0%, #1a1a4e 100%);
+        color: #fff; min-height: 100vh; display: flex;
+        align-items: center; justify-content: center; padding: 20px;
+      }
+      .card {
+        background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 20px; padding: 40px; max-width: 560px; width: 100%;
+        backdrop-filter: blur(8px); box-shadow: 0 20px 50px rgba(0,0,0,0.4); text-align: center;
+      }
+      h1 { font-size: 28px; margin-bottom: 8px; }
+      h1 span { color: #f9004d; }
+      .subtitle { color: #fcfc; margin-bottom: 25px; font-weight: 300; }
+      #canvas { background: #fff; border-radius: 12px; cursor: crosshair; touch-action: none; border: 2px solid rgba(255,255,255,0.2); max-width: 100%; }
+      .result { margin-top: 20px; font-size: 20px; font-weight: 600; min-height: 30px; }
+      .result span { color: #00bfff; font-size: 40px; }
+      .confidence { font-size: 14px; color: #fcfc; font-weight: 400; margin-top: 4px; }
+      .buttons { display: flex; gap: 12px; margin-top: 20px; }
+      button { flex: 1; padding: 14px; background: #f9004d; color: #fff; border: 2px solid transparent; border-radius: 30px; font-size: 16px; font-weight: 700; letter-spacing: 1px; cursor: pointer; transition: all 0.3s ease; font-family: inherit; }
+      button:hover { background: transparent; border-color: #f9004d; color: #f9004d; transform: translateY(-2px); }
+      button.secondary { background: transparent; border-color: #00bfff; color: #00bfff; }
+      button.secondary:hover { background: #00bfff; color: #fff; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Digit <span>Recognizer</span></h1>
+      <p class="subtitle">CNN image classification — draw a digit (0-9)</p>
+      <canvas id="canvas" width="280" height="280"></canvas>
+      <div class="result">Prediction: <span id="result">?</span></div>
+      <div class="confidence" id="confidence"></div>
+      <div class="buttons">
+        <button onclick="analyze()">Predict</button>
+        <button class="secondary" onclick="clearCanvas()">Clear</button>
+      </div>
+    </div>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      let drawing = false;
+
+      canvas.addEventListener("mousedown", (e) => { drawing = true; ctx.beginPath(); ctx.moveTo(getPos(e).x, getPos(e).y); e.preventDefault(); });
+      canvas.addEventListener("mousemove", (e) => { if (!drawing) return; const p = getPos(e); ctx.lineWidth = 18; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.strokeStyle = "#000"; ctx.lineTo(p.x, p.y); ctx.stroke(); });
+      canvas.addEventListener("mouseup", () => (drawing = false));
+      canvas.addEventListener("mouseleave", () => (drawing = false));
+      canvas.addEventListener("touchstart", (e) => { drawing = true; ctx.beginPath(); ctx.moveTo(getPos(e.touches[0]).x, getPos(e.touches[0]).y); e.preventDefault(); });
+      canvas.addEventListener("touchmove", (e) => { if (!drawing) return; const p = getPos(e.touches[0]); ctx.lineTo(p.x, p.y); ctx.stroke(); e.preventDefault(); });
+      canvas.addEventListener("touchend", () => (drawing = false));
+
+      function getPos(e) { const r = canvas.getBoundingClientRect(); return { x: ((e.clientX - r.left) / r.width) * 280, y: ((e.clientY - r.top) / r.height) * 280 }; }
+
+      function clearCanvas() { ctx.clearRect(0, 0, 280, 280); document.getElementById("result").textContent = "?"; document.getElementById("confidence").textContent = ""; }
+
+      async function analyze() {
+        // Downsample canvas to 28x28 and send to backend model
+        const off = document.createElement("canvas");
+        off.width = 28; off.height = 28;
+        const octx = off.getContext("2d");
+        octx.drawImage(canvas, 0, 0, 28, 28);
+        const data = octx.getImageData(0, 0, 28, 28).data;
+        const pixels = [];
+        for (let i = 0; i < data.length; i += 4) {
+          pixels.push(255 - data[i]); // invert to ink density
+        }
+        const res = await fetch("/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ pixels }),
+        });
+        const result = await res.json();
+        document.getElementById("result").textContent = result.prediction;
+        document.getElementById("confidence").textContent = `Confidence: ${(result.confidence * 100).toFixed(1)}%`;
+      }
+    </script>
+  </body>
+</html>
