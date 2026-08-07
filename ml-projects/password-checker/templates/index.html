@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Password Strength Checker</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        font-family: "Josefin Sans", sans-serif;
+        background: linear-gradient(135deg, #0a0a23 0%, #1a1a4e 100%);
+        color: #fff; min-height: 100vh; display: flex;
+        align-items: center; justify-content: center; padding: 20px;
+      }
+      .card {
+        background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 20px; padding: 40px; max-width: 560px; width: 100%;
+        backdrop-filter: blur(8px); box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+      }
+      h1 { text-align: center; font-size: 28px; margin-bottom: 8px; }
+      h1 span { color: #f9004d; }
+      .subtitle { text-align: center; color: #fcfc; margin-bottom: 30px; font-weight: 300; }
+      label { display: block; font-weight: 600; margin-bottom: 8px; }
+      input[type="password"] { width: 100%; padding: 15px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; color: #fff; font-size: 18px; letter-spacing: 2px; margin-bottom: 20px; font-family: inherit; }
+      input[type="password"]:focus { outline: none; border-color: #f9004d; box-shadow: 0 0 0 3px rgba(249,0,77,0.2); }
+      .buttons { display: flex; gap: 12px; margin-bottom: 25px; }
+      button { flex: 1; padding: 14px; background: #f9004d; color: #fff; border: 2px solid transparent; border-radius: 30px; font-size: 16px; font-weight: 700; letter-spacing: 1px; cursor: pointer; transition: all 0.3s ease; font-family: inherit; }
+      button:hover { background: transparent; border-color: #f9004d; color: #f9004d; transform: translateY(-2px); }
+      .result { text-align: center; padding: 20px; border-radius: 12px; font-size: 18px; font-weight: 600; display: none; }
+      .result.weak { background: rgba(249,0,77,0.15); border: 1px solid #f9004d; color: #ff6b6b; }
+      .result.medium { background: rgba(255,215,0,0.15); border: 1px solid #ffc107; color: #ffd700; }
+      .result.strong { background: rgba(0,200,120,0.15); border: 1px solid #00c878; color: #4ecdc4; }
+      .score { margin-top: 8px; font-size: 14px; font-weight: 400; opacity: 0.8; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Password <span>Strength</span> Checker</h1>
+      <p class="subtitle">ML classification — Random Forest + feature engineering</p>
+      <label for="password">Enter a password:</label>
+      <input type="password" id="password" placeholder="Type a password..." />
+      <div class="buttons">
+        <button onclick="analyze()">Check Strength</button>
+        <button style="background: transparent; border-color: #f9004d; color:#f9004d" onclick="clearIt()">Clear</button>
+      </div>
+      <div id="result" class="result"></div>
+    </div>
+    <script>
+      function analyze() {
+        const pw = document.getElementById("password").value;
+        const result = document.getElementById("result");
+        if (!pw) { result.className = "result"; result.style.display = "block"; result.textContent = "Please enter a password."; return; }
+        fetch("/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: pw })
+        })
+        .then(r => r.json())
+        .then(data => {
+          const cls = data.prediction.toLowerCase();
+          result.className = "result " + cls;
+          result.style.display = "block";
+          result.innerHTML = "Strength: <strong>" + data.prediction + "</strong> (Score " + data.score + "/5)" +
+            '<div class="score">Confidence: ' + (data.confidence * 100).toFixed(1) + "%</div>";
+        });
+      }
+      function clearIt() { document.getElementById("password").value = ""; document.getElementById("result").className = "result"; document.getElementById("result").style.display = "none"; }
+    </script>
+  </body>
+</html>
