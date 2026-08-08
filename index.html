@@ -46,13 +46,33 @@
         </div>
     </section>
 
+<!-- AI Chat Widget Section (inline, after name) -->
+    <section class="chat-section">
+        <div id="chat-widget">
+            <div class="chat-header">
+                <span>🤖 AGENT_HUB // SIDDHANTH_S</span>
+            </div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-chips">
+                <span class="chat-chip" onclick="quickChat('About me')">About me</span>
+                <span class="chat-chip" onclick="quickChat('Projects')">Projects</span>
+                <span class="chat-chip" onclick="quickChat('Skills')">Skills</span>
+                <span class="chat-chip" onclick="quickChat('Contact')">Contact</span>
+            </div>
+            <div class="chat-composer">
+                <input id="chatInput" type="text" placeholder="Ask me anything..." autocomplete="off">
+                <button onclick="sendChat()">➤</button>
+            </div>
+        </div>
+    </section>
+
     <!-- About Section -->
     <section id="about" class="section">
         <h2 class="section-title">ABOUT <span class="animated-gradient-text">ME</span></h2>
         <div class="about-card glass-card">
             <div class="about-grid">
                 <div class="about-visual">
-                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop" alt="Creative computing" class="about-img float">
+                    <img src="https://img.freepik.com/free-photo/3d-robot-hand-using-laptop-cyber-art_1048-16187.jpg?w=600&auto=format&fit=crop" alt="Creative computing" class="about-img float">
                 </div>
                 <div class="about-text">
                     <h3 class="about-name font-heading">Hello, I'm <span class="animated-gradient-text">Siddhanth</span></h3>
@@ -203,7 +223,104 @@
         </div>
     </footer>
 
-    <script>
+<script>
+        // ===== AI CHAT WIDGET LOGIC =====
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInputEl = document.getElementById('chatInput');
+
+        function addChatMsg(role, text) {
+            const msg = document.createElement('div');
+            msg.className = 'chat-msg';
+            msg.innerHTML = `<div class="chat-avatar ${role}">${role === 'bot' ? '🤖' : '🧑'}</div>
+                <div class="chat-bubble ${role}">${esc(text)}</div>`;
+            chatMessages.appendChild(msg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function esc(s) {
+            return s.replace(/&/g,'&amp;').replace(/</g,'<').replace(/>/g,'>');
+        }
+
+        function chatTyping(cb) {
+            const msg = document.createElement('div');
+            msg.className = 'chat-msg';
+            msg.innerHTML = `<div class="chat-avatar bot">🤖</div>
+                <div class="chat-bubble bot chat-typing"><span></span><span></span><span></span></div>`;
+            chatMessages.appendChild(msg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            setTimeout(() => { msg.remove(); cb(); }, 650);
+        }
+
+        // Scroll smoothly to a section within the page (no jump)
+        function scrollToSection(sel) {
+            const el = document.querySelector(sel);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Chat knowledge + replies
+        const chatKB = {
+            greet: "Hey there! 👋 I'm Siddhanth's AI assistant. Ask me about his skills, projects, education, or contact! I can even answer general tech questions.",
+            about: "Siddhanth S is a 2nd year AIML Engineer at PES University, Bangalore — building immersive digital experiences where ML meets visual design. Scrolling you to the About section below 👇",
+            skills: "Siddhanth's core skills: Frontend Architecture, Machine Learning, Full-Stack Systems, Computer Vision, 3D & Graphics. Languages: Python, C, C++, JavaScript. Libraries: PyTorch, OpenCV, WebGL. Scrolling to Skills 👇",
+            projects: "Siddhanth has built 5 projects: 🤖 Spam SMS Classifier, 💊 PillPall Network, 🧠 Digit Recognizer, 🩸 LifeLink, 🔒 Password Strength Checker. Scrolling to Projects 👇",
+            contact: "You can reach Siddhanth at 📧 siddhanths130@gmail.com — use the contact form below, or connect on GitHub/Instagram. Scrolling to Contact 👇",
+            education: "Siddhanth is a 2nd year B.Tech CS student at PES University, Bangalore, specializing in AI & Machine Learning 🎓. Scrolls to About!",
+            hobby: "In his free time, Siddhanth enjoys building interactive web experiences, experimenting with ML models, and creative design! 🚀",
+            resume: "You can download Siddhanth's resume! It's in the About section below. 📄 Scrolling there 👇",
+            thanks: "You're welcome! 😊 Anything else about Siddhanth you'd like to know?",
+            bye: "Goodbye, thanks for stopping by! 👋",
+            howareyou: "Running at full capacity! ⚡ All systems online."
+        };
+
+        function chatReply(text) {
+            const t = text.toLowerCase();
+            if (/(hello|hi|hey|yo|sup)\b/.test(t)) return { text: chatKB.greet, nav: null };
+            if (/(about me|yourself|who are you|introduce|background|about you)/.test(t)) return { text: chatKB.about, nav: '#about' };
+            if (/(skill|language|framework|tech|proficient)/.test(t)) return { text: chatKB.skills, nav: '#skills' };
+            if (/(project|work|built|build|github|portfolio)/.test(t)) return { text: chatKB.projects, nav: '#projects' };
+            if (/(contact|email|hire|reach|talk|connect|phone)/.test(t)) return { text: chatKB.contact, nav: '#contact' };
+            if (/(education|university|college|degree|pes|student)/.test(t)) return { text: chatKB.education, nav: '#about' };
+            if (/(hobby|interest|fun|free time)/.test(t)) return { text: chatKB.hobby, nav: null };
+            if (/(resume|download|cv)/.test(t)) return { text: chatKB.resume, nav: '#about' };
+            if (/(thank|thanks|thx)/.test(t)) return { text: chatKB.thanks, nav: null };
+            if (/(bye|goodbye|see you|later)/.test(t)) return { text: chatKB.bye, nav: null };
+            if (/(how are you|how are you doing)/.test(t)) return { text: chatKB.howareyou, nav: null };
+            // general answers
+            if (/(machine learning|ml)/.test(t)) return { text: "Machine Learning is a subset of AI where systems learn patterns from data. Siddhanth uses it to build tools like his spam classifier (98.5%), digit recognizer (99%), and password checker!", nav: null };
+            if (t.includes('ai')) return { text: "Artificial Intelligence (AI) simulates human intelligence in machines — including ML, NLP, and computer vision. Siddhanth studies AI/ML at PES University and builds ML projects!", nav: null };
+            if (t.includes('python')) return { text: "Python is Siddhanth's main language for ML and backend development — used with PyTorch, OpenCV, and scikit-learn.", nav: null };
+            if (/(deep learning|neural network|cnn)/.test(t)) return { text: "Deep learning uses neural networks to learn from data. Siddhanth's digit recognizer uses a CNN to classify handwritten digits at 99% accuracy!", nav: null };
+            if (/(web development|web dev|frontend)/.test(t)) return { text: "Web development is building sites/apps. Siddhanth does both frontend (interactive UIs) and full-stack. He's built platforms like LifeLink and PillPall.", nav: null };
+            if (/(model|classifier|cv|computer vision)/.test(t)) return { text: "Computer Vision lets machines understand images — Siddhanth uses OpenCV and builds vision models like the digit recognizer and classifiers.", nav: null };
+            return { text: "Great question! I'm trained on Siddhanth's profile — I can help with his about, skills, projects, education, contact, or general tech topics. Ask me those! 😊", nav: null };
+        }
+
+        function sendChat() {
+            const val = chatInputEl.value.trim();
+            if (!val) return;
+            addChatMsg('user', val);
+            chatInputEl.value = '';
+            chatTyping(() => {
+                const r = chatReply(val);
+                addChatMsg('bot', r.text);
+                if (r.nav) setTimeout(() => scrollToSection(r.nav), 500);
+            });
+        }
+
+        function quickChat(q) {
+            chatInputEl.value = q;
+            sendChat();
+        }
+
+        chatInputEl.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); sendChat(); }
+        });
+
+        // Welcome message
+        document.addEventListener('DOMContentLoaded', () => {
+            addChatMsg('bot', "Hi! I'm Agent Hub 🤖 — Siddhanth's AI assistant. Ask about his projects, skills, background, or ask me general tech questions!");
+        });
+
         // Custom Glowing Cursor Effect
         const cursor = document.getElementById('cursor');
         window.addEventListener('mousemove', (e) => {

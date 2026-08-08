@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siddhanth S // Generative Agent Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #030014;
+            color: #fff;
+            height: 100vh;
+            overflow: hidden;
+            background-image:
+                radial-gradient(circle at 20% 10%, rgba(255,0,127,0.15) 0%, transparent 45%),
+                radial-gradient(circle at 80% 90%, rgba(0,240,255,0.12) 0%, transparent 45%),
+                radial-gradient(circle at 60% 40%, rgba(127,0,255,0.15) 0%, transparent 55%);
+        }
+
+        /* ===== Chat window ===== */
+        #agent {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.45s cubic-bezier(0.77,0,0.175,1);
+            background: linear-gradient(180deg, #0a0420 0%, #030014 60%);
+        }
+        #agent.minimized { transform: translateY(100%); }
+
+        /* Header */
+        .agent-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 26px;
+            border-bottom: 1px solid rgba(255,0,127,0.2);
+            background: rgba(10,4,32,0.85);
+            backdrop-filter: blur(16px);
+        }
+        .brand { font-family: 'Space Grotesk', sans-serif; font-weight: 700; letter-spacing: 2px; font-size: 13px; color: #f472b6; }
+        .status-badge {
+            font-size: 11px; padding: 5px 12px; border-radius: 999px;
+            background: rgba(0,240,255,0.15); color: #22d3ee;
+            border: 1px solid rgba(0,240,255,0.3);
+            letter-spacing: 1px;
+        }
+        .icon-btn {
+            width: 38px; height: 38px; border-radius: 12px;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+            color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: all .3s ease;
+        }
+        .icon-btn:hover { background: rgba(255,0,127,0.3); border-color: rgba(255,0,127,0.5); }
+
+        /* Messages */
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 26px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            max-width: 860px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        .tg { display: flex; gap: 12px; animation: fadeUp .35s ease; }
+        @keyframes fadeUp { from { opacity:0; transform: translateY(10px);} to {opacity:1; transform:none;} }
+        .avatar {
+            width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; font-size: 16px;
+        }
+        .avatar.bot { background: linear-gradient(135deg, #ff007f, #7f00ff); }
+        .avatar.user { background: linear-gradient(135deg, #00f0ff, #0891b2); }
+        .bubble {
+            padding: 14px 18px;
+            border-radius: 16px;
+            max-width: 82%;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .bubble.bot {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-top-left-radius: 4px;
+            color: #e2e8f0;
+        }
+        .bubble.user {
+            background: linear-gradient(135deg, rgba(0,240,255,0.55), rgba(255,0,127,0.5));
+            border: 1px solid rgba(255,255,255,0.15);
+            border-top-right-radius: 4px;
+            margin-left: auto;
+        }
+
+        /* Rich content cards inside chat */
+        .proj-card {
+            margin-top: 12px;
+            background: rgba(0,0,0,0.35);
+            border: 1px solid rgba(0,240,255,0.25);
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: all .3s ease;
+        }
+        .proj-card:hover { background: rgba(0,240,255,0.12); transform: translateX(4px); }
+        .proj-ico {
+            width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; font-size: 20px;
+        }
+        .proj-title { font-weight: 600; font-size: 15px; }
+        .proj-desc { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+
+        /* Typing dots */
+        .typing span {
+            display: inline-flex; width: 7px; height: 7px; border-radius: 50%;
+            background: #22d3ee; margin-right: 5px; animation: blink 1.2s infinite;
+        }
+        .typing span:nth-child(2){ animation-delay:.2s; } .typing span:nth-child(3){ animation-delay:.4s; }
+        @keyframes blink { 0%,80%,100%{opacity:.2} 40%{opacity:1} }
+
+        /* Input area */
+        .composer {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 18px 26px 22px;
+            background: rgba(10,4,32,0.85);
+            backdrop-filter: blur(16px);
+        }
+        .composer-inner { max-width: 860px; margin: 0 auto; display: flex; gap: 12px; align-items: flex-end; }
+        .chat-input {
+            flex: 1;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 16px;
+            padding: 15px 18px;
+            color: #fff;
+            font-size: 15px;
+            resize: none;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            transition: border-color .3s ease;
+            min-height: 52px;
+            max-height: 140px;
+        }
+        .chat-input:focus { border-color: #ff007f; box-shadow: 0 0 0 3px rgba(255,0,127,0.15); }
+        .send-btn {
+            width: 52px; height: 52px; border-radius: 16px; border: none; cursor: pointer;
+            background: linear-gradient(135deg, #ff007f, #7f00ff, #00f0ff);
+            background-size: 200% 200%;
+            animation: gradShift 4s ease infinite;
+            color: #fff; font-size: 20px; display: flex; align-items: center; justify-content: center;
+            transition: transform .2s ease;
+        }
+        .send-btn:hover { transform: scale(1.06); }
+        @keyframes gradShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+
+        .chips {
+            max-width: 860px; margin: 14px auto 0; display: flex; gap: 10px; flex-wrap: wrap;
+        }
+        .chip {
+            font-size: 12px; padding: 7px 14px; border-radius: 999px;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);
+            color: #cbd5e1; cursor: pointer; transition: all .3s ease;
+        }
+        .chip:hover { border-color: #00f0ff; color: #22d3ee; background: rgba(0,240,255,0.1); }
+
+        /* Scrollbar */
+        .messages::-webkit-scrollbar { width: 6px; }
+        .messages::-webkit-scrollbar-thumb { background: rgba(255,0,127,0.4); border-radius: 10px; }
+
+        /* ===== Embedded sections (for navigation) ===== */
+        #hub-sections {
+            position: fixed;
+            inset: 0;
+            z-index: 99;
+            overflow-y: auto;
+            background: #030014;
+            display: none;
+            padding: 80px 24px 60px;
+        }
+        #hub-sections.open { display: block; }
+        .section-head { text-align: center; margin-bottom: 40px; }
+        .section-head h2 { font-family: 'Space Grotesk', sans-serif; font-size: 34px; font-weight: 700; margin-bottom: 12px; }
+        .enhance { background: linear-gradient(135deg, #ff007f, #7f00ff, #00f0ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .grace {
+            max-width: 1100px; margin: 0 auto; padding: 30px; border-radius: 24px;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09);
+            backdrop-filter: blur(14px);
+        }
+        .go-back { position: fixed; top: 26px; left: 26px; font-size: 13px; padding: 10px 18px; border-radius: 999px;
+            background: rgba(255,0,127,0.2); border: 1px solid rgba(255,0,127,0.4); color: #f472b6; cursor: pointer; z-index: 1000; }
+        .mini-proj {
+            padding: 20px; border-radius: 16px; background: rgba(3,0,20,0.6); border: 1px solid rgba(255,255,255,0.1);
+            transition: all .3s ease;
+        }
+        .mini-proj:hover { border-color: rgba(0,240,255,0.5); transform: translateY(-4px); }
+        .skill-pill { display: inline-block; margin: 5px; padding: 8px 16px; border-radius: 999px;
+            background: rgba(0,240,255,0.1); border: 1px solid rgba(0,240,255,0.3); color: #22d3ee; font-size: 13px; font-weight: 600; }
+        .tag { display:inline-block; font-size:10px; padding:3px 8px; border-radius:999px; background:rgba(255,0,127,0.2); color:#f472b6; letter-spacing:1px; }
+    </style>
+</head>
+<body>
+
+    <!-- Full-screen Chat Agent -->
+    <div id="agent">
+        <div class="agent-header">
+            <div class="flex items-center gap-3">
+                <span class="w-3 h-3 rounded-full bg-pink-500 animate-ping"></span>
+                <span class="brand">AGENT_HUB // SIDDHANTH_S</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="status-badge hidden sm:block">● AGENT_READY</span>
+                <button class="icon-btn" onclick="toggleAgent()" title="Minimize">—</button>
+            </div>
+        </div>
+
+        <div class="messages" id="messages"></div>
+
+        <div class="composer">
+            <div class="composer-inner">
+                <textarea class="chat-input" id="chatInput" rows="1" placeholder="Ask me anything... e.g. 'Show me your projects' or 'What is AI?'"></textarea>
+                <button class="send-btn" onclick="handleSend()">➤</button>
+            </div>
+            <div class="chips" id="chips">
+                <span class="chip" onclick="quickAsk('Tell me about yourself')">About me</span>
+                <span class="chip" onclick="quickAsk('Show me your projects')">Projects</span>
+                <span class="chip" onclick="quickAsk('What are your skills?')">Skills</span>
+                <span class="chip" onclick="quickAsk('How to contact you?')">Contact</span>
+                <span class="chip" onclick="quickAsk('Who are you?')">Who are you?</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Embedded Portfolio Sections (navigated to by the bot) -->
+    <div id="hub-sections">
+        <button class="go-back" onclick="backToChat()">← Back to chat</button>
+
+        <div id="sec-about" class="grace" style="margin-bottom:30px;">
+            <div class="section-head">
+                <span class="tag">ABOUT</span>
+                <h2>ABOUT <span class="enhance">ME</span></h2>
+            </div>
+            <p style="color:#94a3b8; font-size:17px; line-height:1.9; text-align:center; max-width:760px; margin:0 auto;">
+                Hello! I'm <strong style="color:#fff">Siddhanth S</strong>, a 2nd year <strong style="color:#22d3ee">AIML Engineer</strong> at
+                <strong style="color:#f472b6">PES University, Bangalore</strong>. I build immersive digital experiences where machine learning
+                meets cutting-edge visual design — from ML-powered tools to full community platforms.
+            </p>
+        </div>
+
+        <div id="sec-skills" class="grace" style="margin-bottom:30px;">
+            <div class="section-head">
+                <span class="tag">SKILLS</span>
+                <h2>CORE <span class="enhance">CAPABILITIES</span></h2>
+            </div>
+            <div style="text-align:center; margin-bottom:20px;">
+                <span class="skill-pill">Frontend Architecture</span>
+                <span class="skill-pill">Machine Learning</span>
+                <span class="skill-pill">Full-Stack Systems</span>
+                <span class="skill-pill">Computer Vision</span>
+                <span class="skill-pill">3D & Graphics</span>
+                <span class="skill-pill">Python · C · C++</span>
+                <span class="skill-pill">JavaScript · HTML/CSS</span>
+                <span class="skill-pill">PyTorch · OpenCV</span>
+                <span class="skill-pill">WebGL</span>
+            </div>
+        </div>
+
+        <div id="sec-projects" class="grace" style="margin-bottom:30px;">
+            <div class="section-head">
+                <span class="tag">PROJECTS</span>
+                <h2>MY <span class="enhance">PROJECTS</span></h2>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;">
+                <div class="mini-proj"><h3 style="font-family:'Space Grotesk'; margin-bottom:8px;">🤖 Spam SMS Classifier</h3><p style="color:#94a3b8; font-size:13px;">Ensemble + TF-IDF — 98.5% accuracy. Detects spam messages.</p></div>
+                <div class="mini-proj"><h3 style="font-family:'Space Grotesk'; margin-bottom:8px;">🧠 Digit Recognizer</h3><p style="color:#94a3b8; font-size:13px;">CNN on MNIST — 99% accuracy. Interactive draw-to-predict demo.</p></div>
+                <div class="mini-proj"><h3 style="font-family:'Space Grotesk'; margin-bottom:8px;">🔒 Password Strength Checker</h3><p style="color:#94a3b8; font-size:13px;">Random Forest classifier for Weak/Medium/Strong passwords.</p></div>
+                <div class="mini-proj"><h3 style="font-family:'Space Grotesk'; margin-bottom:8px;">💊 PillPall Network</h3><p style="color:#94a3b8; font-size:13px;">Sustainable medicine sharing network — live web app.</p></div>
+                <div class="mini-proj"><h3 style="font-family:'Space Grotesk'; margin-bottom:8px;">🩸 LifeLink</h3><p style="color:#94a3b8; font-size:13px;">Blood & organ donation — donor matching, emergency requests, live stats.</p></div>
+            </div>
+        </div>
+
+        <div id="sec-contact" class="grace" style="margin-bottom:30px;">
+            <div class="section-head">
+                <span class="tag">CONTACT</span>
+                <h2>GET IN <span class="enhance">TOUCH</span></h2>
+            </div>
+            <p style="text-align:center; color:#94a3b8; font-size:16px;">
+                📧 <a href="mailto:siddhanths130@gmail.com" style="color:#22d3ee; text-decoration:none;">siddhanths130@gmail.com</a><br><br>
+                🔗 <a href="https://github.com/siddhanths13" target="_blank" style="color:#22d3ee; text-decoration:none;">github.com/siddhanths13</a><br><br>
+                📸 <a href="https://www.instagram.com/siddhanth13_" target="_blank" style="color:#f472b6; text-decoration:none;">@siddhanth13_</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const messages = document.getElementById('messages');
+        const chatInput = document.getElementById('chatInput');
+
+        // ===== SIDDHANTH KNOWLEDGE BASE =====
+        const knowledge = {
+            projects: [
+                { icon:'🤖', title:'Spam SMS Classifier', desc:'ML — Ensemble + TF-IDF, 98.5% accuracy', action:'#sec-projects' },
+                { icon:'🧠', title:'Handwritten Digit Recognizer', desc:'ML — CNN on MNIST, 99% accuracy', action:'#sec-projects' },
+                { icon:'🔒', title:'Password Strength Checker', desc:'ML — Random Forest (Weak/Med/Strong)', action:'#sec-projects' },
+                { icon:'💊', title:'PillPall Network', desc:'Sustainable medicine network (web app)', action:'#sec-projects' },
+                { icon:'🩸', title:'LifeLink', desc:'Blood & organ donation community platform', action:'#sec-projects' }
+            ]
+        };
+
+        // ===== INTENT ENGINE (keyword matching) =====
+        function getIntent(text) {
+            if (/(hello|hi|hey|yo|sup)\b/.test(text)) return 'greet';
+            if (/(about you|about me|yourself|who are you|introduce|background|tell me about)/.test(text)) return 'about';
+            if (/(skill|language|framework|techstack|proficient|know how)/.test(text)) return 'skills';
+            if (/(project|work|built|build|github|repo|made|portfolio)/.test(text)) return 'projects';
+            if (/(contact|email|hire|reach|talk|connect|linkedin|phone)/.test(text)) return 'contact';
+            if (/(education|university|college|degree|study|pes|student)/.test(text)) return 'education';
+            if (/(hobby|interest|fun|free time|like to do)/.test(text)) return 'hobbies';
+            if (/(resume|download|cv)/.test(text)) return 'resume';
+            if (/(name|call you)/.test(text)) return 'name';
+            if (/(spam|spam classifier)/.test(text)) return 'proj-spam';
+            if (/(digit|recognizer|mnist|handwritten)/.test(text)) return 'proj-digit';
+            if (/(password|strength checker)/.test(text)) return 'proj-pass';
+            if (/(pillpall|medicine)/.test(text)) return 'proj-pill';
+            if (/(lifelink|blood|organ|donor|donation)/.test(text)) return 'proj-lifelink';
+            if (/(what is|explain|meaning of|define)/.test(text)) return 'general_what';
+            if (/(how are you|how do you do|how's it going)/.test(text)) return 'howareyou';
+            if (/(thank|thanks|thx|appreciate)/.test(text)) return 'thanks';
+            if (/(bye|goodbye|see you|later)/.test(text)) return 'bye';
+            return 'fallback';
+        }
+
+        // ===== GENERAL KNOWLEDGE (basic ChatGPT-like answers) =====
+        const generalAnswers = {
+            'ai': "Artificial Intelligence (AI) is the simulation of human intelligence in machines. It includes ML (learning from data), NLP (understanding language), computer vision, and more. Siddhanth studies AI/ML at PES University and builds ML models like classifiers and CNNs.",
+            'machine learning': "Machine Learning is a subset of AI where systems learn patterns from data instead of explicit rules. Examples: Siddhanth's spam classifier (98.5%), digit recognizer (99%), and password checker all use ML!",
+            'ml': "ML = Machine Learning. It's how Siddhanth builds his smart tools — training models on data to make predictions. He uses Python, PyTorch, and scikit-learn.",
+            'python': "Python is Siddhanth's main language for ML and backend development. He uses it with PyTorch, OpenCV, and scikit-learn for his projects.",
+            'javascript': "JavaScript powers the interactive frontend of Siddhanth's web apps — animations, real-time UIs, and canvas-based demos like the digit recognizer.",
+            'deep learning': "Deep Learning is ML using neural networks with many layers. Siddhanth's digit recognizer uses a CNN (Convolutional Neural Network) to classify handwritten digits at 99% accuracy.",
+            'neural network': "A neural network is a ML model inspired by the brain — layers of interconnected 'neurons' that learn from data. CNNs are great for images, which Siddhanth uses in computer vision.",
+            'web development': "Web development is building websites and apps. Siddhanth does both frontend (interactive UIs) and full-stack (backends + data). He's built platforms like LifeLink and PillPall.",
+            'computer vision': "Computer Vision lets machines 'see' and understand images. Siddhanth works with OpenCV and builds vision models like the digit recognizer and image classifiers.",
+            'cloud': "Cloud computing means hosting apps on remote servers. Siddhanth deploys his projects (like PillPall) using cloud services like Render.",
+            'github': "GitHub is a platform to host and share code. Siddhanth's projects are on his GitHub: github.com/siddhanths13.",
+            'c++': "C++ is a low-level programming language Siddhanth uses for performance and foundational programming.",
+            'data': "Data is the fuel of ML. Siddhanth preprocesses and structures data pipelines for his ML models — part of his data engineering skills."
+        };
+
+        // ===== BOT RESPONSES =====
+        function botReply(intent, raw) {
+            switch (intent) {
+                case 'greet':
+                    return { text: "Hey there! 👋 I'm Siddhanth's AI agent. Ask me about his skills, projects, education, or anything—even general questions like 'What is machine learning?'.", nav: null };
+                case 'about':
+                    return { text: "Siddhanth S is a 2nd year AIML Engineer at PES University, Bangalore. He builds immersive digital experiences where machine learning meets cutting-edge visual design. Here's his story — I'm opening the About section for you! 👇", nav: '#sec-about' };
+                case 'skills':
+                    return { text: "Siddhanth's core skills: Frontend Architecture, Machine Learning, Full-Stack Systems, Computer Vision, 3D & Graphics. Languages: Python, C, C++, JavaScript. Libraries: PyTorch, OpenCV, WebGL. Opening the Skills section 👇", nav: '#sec-skills' };
+                case 'projects':
+                    return { text: "Siddhanth has built 5 awesome projects! 🔥 I've listed them below — and I'm opening the Projects section too. Click any card to explore. 👇", nav: '#sec-projects', cards: true };
+                case 'contact':
+                    return { text: "You can reach Siddhanth at 📧 siddhanths130@gmail.com, or find him on GitHub & Instagram. Opening the Contact section 👇", nav: '#sec-contact' };
+                case 'education':
+                    return { text: "Siddhanth is currently a 2nd year B.Tech Computer Science student at PES University, Bangalore, specializing in Artificial Intelligence and Machine Learning. 🎓", nav: '#sec-about' };
+                case 'hobbies':
+                    return { text: "In his free time, Siddhanth loves exploring creative design, building interactive web experiences, experimenting with ML models, and turning bold ideas into polished products! 🚀", nav: null };
+                case 'resume':
+                    return { text: "You can download Siddhanth's resume! 📄 It's available in the portfolio. Check the About section or use the download link.", nav: '#sec-about' };
+                case 'name':
+                    return { text: "I'm the Agent Hub virtual assistant for Siddhanth S! 🤖 He's the AIML engineer behind this portfolio.", nav: null };
+                case 'proj-spam':
+                    return { text: "🤖 Spam SMS Classifier — an ML model using Ensemble + TF-IDF with 98.5% accuracy to detect spam messages.", nav: '#sec-projects' };
+                case 'proj-digit':
+                    return { text: "🧠 Handwritten Digit Recognizer — a CNN trained on MNIST at 99% accuracy. It has an interactive canvas where you can draw a digit and it predicts it!", nav: '#sec-projects' };
+                case 'proj-pass':
+                    return { text: "🔒 Password Strength Checker — a Random Forest classifier that rates passwords as Weak, Medium, or Strong.", nav: '#sec-projects' };
+                case 'proj-pill':
+                    return { text: "💊 PillPall Network — a sustainable medicine sharing network. It's a live web app!", nav: '#sec-projects' };
+                case 'proj-lifelink':
+                    return { text: "🩸 LifeLink — a blood & organ donation community platform with donor matching, 48h emergency requests, organ pledges, and live stats.", nav: '#sec-projects' };
+                case 'general_what':
+                    return { text: generalLookup(raw), nav: null };
+                case 'howareyou':
+                    return { text: "I'm running at full capacity! ⚡ All systems online and ready to tell you about Siddhanth's projects and skills.", nav: null };
+                case 'thanks':
+                    return { text: "You're welcome! 😊 Anything else you'd like to know about Siddhanth?", nav: null };
+                case 'bye':
+                    return { text: "Goodbye! 👋 Thanks for stopping by. Feel free to come back anytime to explore Siddhanth's work.", nav: null };
+                default:
+                    return { text: fallbackAnswer(), nav: null };
+            }
+        }
+
+        // General lookup for "what is X" questions
+        function generalLookup(raw) {
+            const lower = raw.toLowerCase();
+            for (const key in generalAnswers) {
+                if (lower.includes(key.toLowerCase())) return generalAnswers[key];
+            }
+            return "Great question! Here's a quick take: " + raw.trim() + " — I'm not 100% sure on that specific topic, but I'd be happy to tell you about Siddhanth's skills, projects, or education instead! 😊";
+        }
+
+        function fallbackAnswer() {
+            const f = [
+                "That's an interesting question! I'm an AI agent trained on Siddhanth's profile. I can help with: his about/background, skills, projects, education, contact info, or general tech topics like AI/ML/web dev. Try asking!",
+                "I may not have that exact answer, but I know Siddhanth really well! Ask me about his projects 🚀, skills 💻, his studies 🎓, or how to contact him 📧.",
+                "Hmm, I'm not sure about that one. But did you know Siddhanth built a spam classifier with 98.5% accuracy? Ask me about his projects! 😄"
+            ];
+            return f[Math.floor(Math.random() * f.length)];
+        }
+
+        // ===== UI HELPERS =====
+        function addUserMsg(text) {
+            const row = document.createElement('div');
+            row.className = 'tg';
+            row.innerHTML = `<div class="avatar user">🧑</div>
+                <div class="bubble user">${escapeHtml(text)}</div>`;
+            messages.appendChild(row);
+            scrollBottom();
+        }
+
+        function addBotMsg(text, cards) {
+            const row = document.createElement('div');
+            row.className = 'tg';
+            row.innerHTML = `<div class="avatar bot">🤖</div>
+                <div class="bubble bot">${escapeHtml(text)}${cards ? projectCardsHTML() : ''}</div>`;
+            messages.appendChild(row);
+            scrollBottom();
+            return row;
+        }
+
+        function projectCardsHTML() {
+            let html = '';
+            knowledge.projects.forEach(p => {
+                html += `<div class="proj-card" onclick="goToSection('${p.action}')">
+                    <div class="proj-ico" style="background:linear-gradient(135deg,#ff007f33,#00f0ff33)">${p.icon}</div>
+                    <div><div class="proj-title">${p.title}</div><div class="proj-desc">${p.desc}</div></div>
+                </div>`;
+            });
+            return html;
+        }
+
+        function escapeHtml(s) {
+            return s.replace(/&/g,'&amp;').replace(/</g,'<').replace(/>/g,'>');
+        }
+
+        function scrollBottom() {
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function showTyping(cb) {
+            const row = document.createElement('div');
+            row.className = 'tg';
+            row.innerHTML = `<div class="avatar bot">🤖</div>
+                <div class="bubble bot typing"><span></span><span></span><span></span></div>`;
+            messages.appendChild(row);
+            scrollBottom();
+            setTimeout(() => { row.remove(); cb(); }, 700);
+        }
+
+        // ===== NAVIGATION =====
+        function toggleAgent() {
+            document.getElementById('agent').classList.add('minimized');
+            setTimeout(() => { document.getElementById('agent').style.display = 'none'; }, 450);
+            document.getElementById('reopen').style.display = 'flex';
+        }
+
+        function openAgent() {
+            document.getElementById('agent').style.display = 'flex';
+            document.getElementById('reopen').style.display = 'none';
+            setTimeout(() => document.getElementById('agent').classList.remove('minimized'), 50);
+        }
+
+        function goToSection(sel) {
+            document.getElementById('hub-sections').classList.add('open');
+            document.getElementById('agent').style.display = 'none';
+            setTimeout(() => {
+                const el = document.querySelector(sel);
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 150);
+        }
+
+        function backToChat() {
+            document.getElementById('hub-sections').classList.remove('open');
+            document.getElementById('agent').style.display = 'flex';
+        }
+
+        // ===== SEND LOGIC =====
+        function handleSend() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            addUserMsg(text);
+            chatInput.value = '';
+            chatInput.style.height = 'auto';
+            showTyping(() => {
+                const intent = getIntent(text.toLowerCase());
+                const reply = botReply(intent, text);
+                addBotMsg(reply.text, reply.cards);
+                if (reply.nav) {
+                    setTimeout(() => goToSection(reply.nav), 900);
+                }
+            });
+        }
+
+        function quickAsk(q) {
+            chatInput.value = q;
+            handleSend();
+        }
+
+        // Enter to send, Shift+Enter for newline
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+            }
+        });
+
+        // Auto-grow textarea
+        chatInput.addEventListener('input', () => {
+            chatInput.style.height = 'auto';
+            chatInput.style.height = Math.min(chatInput.scrollHeight, 140) + 'px';
+        });
+
+        // ===== INIT =====
+        // Welcome message
+        const welcome = document.createElement('div');
+        welcome.className = 'tg';
+        welcome.innerHTML = `<div class="avatar bot">🤖</div>
+            <div class="bubble bot">
+                Hi! I'm <strong>Agent Hub</strong> 🤖 — Siddhanth's AI assistant. I know everything about him and can also answer general tech questions!
+                <br><br>Try asking: <em>"Tell me about yourself"</em>, <em>"Show me your projects"</em>, <em>"What is machine learning?"</em>
+            </div>`;
+        messages.appendChild(welcome);
+        scrollBottom();
+    </script>
+
+    <!-- Reopen button (shown when minimized) -->
+    <div id="reopen" onclick="openAgent()" style="display:none; position:fixed; bottom:26px; right:26px; z-index:101; width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,#ff007f,#7f00ff,#00f0ff); cursor:pointer; align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(255,0,127,0.5);">
+        <span style="font-size:26px;">🤖</span>
+    </div>
+</body>
+</html>
