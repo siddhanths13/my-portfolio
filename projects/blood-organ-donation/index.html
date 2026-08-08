@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LifeLink — Blood & Organ Donation Network</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Serif+Display&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <a href="#home" class="brand">
+          <span class="brand-mark">+</span>
+          <span class="brand-name">Life<span>Link</span></span>
+        </a>
+        <nav class="main-nav" id="mainNav">
+          <a href="#home" class="nav-link">Home</a>
+          <a href="#register" class="nav-link">Register</a>
+          <a href="#donors" class="nav-link">Find Donors</a>
+          <a href="#requests" class="nav-link">Requests</a>
+          <a href="#organs" class="nav-link">Organs</a>
+          <a href="#stats" class="nav-link">Stats</a>
+        </nav>
+        <a href="#register" class="btn btn-primary btn-nav">Become a Donor</a>
+        <button class="nav-toggle" id="navToggle" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- ===================== HERO ===================== -->
+      <section class="hero" id="home">
+        <div class="wrap hero-grid">
+          <div class="hero-text">
+            <p class="eyebrow"><span class="dot"></span> Bangalore · Community Powered</p>
+            <h1>
+              One donation.<br />
+              <em>Three lives.</em>
+            </h1>
+            <p class="hero-sub">
+              LifeLink connects voluntary blood donors, organ pledge donors and
+              families in urgent need — no middlemen, no waiting rooms, just
+              neighbours helping neighbours.
+            </p>
+            <div class="hero-actions">
+              <a href="#register" class="btn btn-primary">Register as Donor</a>
+              <a href="#donors" class="btn btn-ghost">Search Donors</a>
+            </div>
+            <div class="hero-note">
+              <i class="fas fa-heartbeat"></i>
+              <span>Blood saves lives every 2 seconds. Your type could be the match.</span>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <div class="drop-card">
+              <div class="drop-icon"><i class="fas fa-tint"></i></div>
+              <div class="drop-info">
+                <strong>O- Donors</strong>
+                <span>Universal donors · always needed</span>
+              </div>
+              <span class="pulse"></span>
+            </div>
+            <div class="drop-card drop-card-alt">
+              <div class="drop-icon"><i class="fas fa-hand-holding-heart"></i></div>
+              <div class="drop-info">
+                <strong>Organ Pledges</strong>
+                <span>1 donor can save up to 8 lives</span>
+              </div>
+            </div>
+            <div class="hero-quote">
+              <i class="fas fa-quote-left"></i>
+              <p>“We rise by lifting others.”</p>
+            </div>
+          </div>
+        </div>
+        <div class="hero-strip">
+          <div class="wrap strip-grid">
+            <div class="strip-item">
+              <span class="strip-num" id="stripDonors">0</span>
+              <span class="strip-label">Registered Donors</span>
+            </div>
+            <div class="strip-item">
+              <span class="strip-num" id="stripRequests">0</span>
+              <span class="strip-label">Active Requests</span>
+            </div>
+            <div class="strip-item">
+              <span class="strip-num" id="stripPledges">0</span>
+              <span class="strip-label">Organ Pledges</span>
+            </div>
+            <div class="strip-item">
+              <span class="strip-num" id="stripCities">0</span>
+              <span class="strip-label">Cities Covered</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== REGISTER ===================== -->
+      <section class="section" id="register">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">Become a donor</p>
+            <h2>Register as a blood donor</h2>
+            <p class="section-sub">
+              Takes about a minute. You're eligible if you're 18–65, weigh at
+              least 45&nbsp;kg and are generally healthy.
+            </p>
+          </div>
+
+          <div class="register-grid">
+            <form class="card form-card" id="donorForm">
+              <div class="form-row">
+                <div class="field">
+                  <label for="dName">Full name</label>
+                  <input type="text" id="dName" placeholder="e.g. Ananya Rao" required />
+                </div>
+                <div class="field">
+                  <label for="dAge">Age</label>
+                  <input type="number" id="dAge" min="18" max="65" placeholder="21" required />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="field">
+                  <label for="dGroup">Blood group</label>
+                  <select id="dGroup" required>
+                    <option value="" disabled selected>Select group</option>
+                    <option>A+</option><option>A-</option>
+                    <option>B+</option><option>B-</option>
+                    <option>AB+</option><option>AB-</option>
+                    <option>O+</option><option>O-</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="dCity">City</label>
+                  <input type="text" id="dCity" placeholder="e.g. Bangalore" required />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="field">
+                  <label for="dPhone">Phone</label>
+                  <input type="tel" id="dPhone" placeholder="10-digit mobile" pattern="[0-9]{10}" required />
+                </div>
+                <div class="field">
+                  <label for="dLast">Last donation (optional)</label>
+                  <input type="month" id="dLast" />
+                </div>
+              </div>
+
+              <label class="check">
+                <input type="checkbox" id="dAck" required />
+                <span>I confirm I'm healthy, not on medication that disqualifies me, and my details are accurate.</span>
+              </label>
+
+              <button type="submit" class="btn btn-primary btn-block">
+                <i class="fas fa-tint"></i> Register Me
+              </button>
+              <p class="form-note" id="donorFormNote"></p>
+            </form>
+
+            <aside class="card info-card">
+              <h3><i class="fas fa-heart"></i> Quick eligibility check</h3>
+              <ul class="checklist">
+                <li>Age between <strong>18 and 65</strong> years</li>
+                <li>Body weight at least <strong>45 kg</strong></li>
+                <li>Haemoglobin level <strong>≥ 12.5 g/dl</strong></li>
+                <li>No cold / flu in the last <strong>2 weeks</strong></li>
+                <li>Not pregnant or breastfeeding</li>
+                <li>No new tattoo / piercing in last <strong>6 months</strong></li>
+              </ul>
+              <div class="tip">
+                <i class="fas fa-info-circle"></i>
+                <p>
+                  The body replaces donated blood within 24–48 hours. Men can donate
+                  every 3 months, women every 4.
+                </p>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== FIND DONORS ===================== -->
+      <section class="section section-alt" id="donors">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">Find a match</p>
+            <h2>Search available donors</h2>
+            <p class="section-sub">
+              Filter by blood group and city. The urgency badge marks donors who
+              are reachable right now.
+            </p>
+          </div>
+
+          <div class="filters card">
+            <div class="field">
+              <label for="fGroup">Blood group</label>
+              <select id="fGroup">
+                <option value="">All groups</option>
+                <option>A+</option><option>A-</option>
+                <option>B+</option><option>B-</option>
+                <option>AB+</option><option>AB-</option>
+                <option>O+</option><option>O-</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="fCity">City</label>
+              <input type="text" id="fCity" placeholder="Any city" />
+            </div>
+            <button class="btn btn-primary" id="filterBtn"><i class="fas fa-search"></i> Apply</button>
+            <button class="btn btn-ghost" id="resetBtn">Reset</button>
+          </div>
+
+          <div class="donor-count" id="donorCount"></div>
+          <div class="donor-grid" id="donorGrid"></div>
+        </div>
+      </section>
+
+      <!-- ===================== REQUESTS ===================== -->
+      <section class="section" id="requests">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">Urgent help</p>
+            <h2>Emergency blood requests</h2>
+            <p class="section-sub">
+              Post a request if you or someone you know needs blood urgently. Requests
+              stay live for 48 hours.
+            </p>
+          </div>
+
+          <div class="request-grid">
+            <form class="card form-card" id="requestForm">
+              <h3>Post a request</h3>
+              <div class="form-row">
+                <div class="field">
+                  <label for="rGroup">Blood group needed</label>
+                  <select id="rGroup" required>
+                    <option value="" disabled selected>Select group</option>
+                    <option>A+</option><option>A-</option>
+                    <option>B+</option><option>B-</option>
+                    <option>AB+</option><option>AB-</option>
+                    <option>O+</option><option>O-</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="rHospital">Hospital / location</label>
+                  <input type="text" id="rHospital" placeholder="e.g. Aster CMI, Hebbal" required />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label for="rName">Patient name</label>
+                  <input type="text" id="rName" placeholder="Full name (optional)" />
+                </div>
+                <div class="field">
+                  <label for="rPhone">Contact number</label>
+                  <input type="tel" id="rPhone" placeholder="10-digit mobile" pattern="[0-9]{10}" required />
+                </div>
+              </div>
+              <div class="field">
+                <label for="rNote">Anything helpers should know</label>
+                <textarea id="rNote" rows="3" placeholder="e.g. Units needed, patient age, contact timing..."></textarea>
+              </div>
+              <button type="submit" class="btn btn-danger btn-block">
+                <i class="fas fa-siren"></i> Post Request
+              </button>
+              <p class="form-note" id="requestFormNote"></p>
+            </form>
+
+            <div class="request-list" id="requestList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== ORGANS ===================== -->
+      <section class="section section-alt" id="organs">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">The gift of life</p>
+            <h2>Organ & tissue donation</h2>
+            <p class="section-sub">
+              One organ donor can save up to eight lives. Pledging your organs is
+              simple, legal and free.
+            </p>
+          </div>
+
+          <div class="organ-grid">
+            <div class="card organ-info">
+              <h3>What can be donated?</h3>
+              <div class="organ-chips">
+                <span class="chip">Kidneys <small>2 lives</small></span>
+                <span class="chip">Liver <small>can be split</small></span>
+                <span class="chip">Heart</span>
+                <span class="chip">Lungs <small>2 lives</small></span>
+                <span class="chip">Pancreas</span>
+                <span class="chip">Intestine</span>
+                <span class="chip">Corneas <small>sight for 2</small></span>
+                <span class="chip">Skin & bone</span>
+              </div>
+              <p class="organ-para">
+                In India, anyone can pledge to be an organ donor. Your family's
+                consent is the final word, so <em>talk to them</em> about your
+                decision — that conversation matters as much as the pledge.
+              </p>
+              <div class="tip">
+                <i class="fas fa-hand-holding-heart"></i>
+                <p>
+                  Register on the official <strong>NOTTO</strong> portal to get a
+                  digital donor card. This form is a community pledge list.
+                </p>
+              </div>
+            </div>
+
+            <form class="card form-card" id="organForm">
+              <h3>Pledge your organs</h3>
+              <div class="form-row">
+                <div class="field">
+                  <label for="oName">Full name</label>
+                  <input type="text" id="oName" placeholder="e.g. Rahul Nair" required />
+                </div>
+                <div class="field">
+                  <label for="oAge">Age</label>
+                  <input type="number" id="oAge" min="18" placeholder="25" required />
+                </div>
+              </div>
+              <div class="field">
+                <label>Organs you wish to donate</label>
+                <div class="organ-options">
+                  <label class="check"><input type="checkbox" value="Kidneys" /> Kidneys</label>
+                  <label class="check"><input type="checkbox" value="Liver" /> Liver</label>
+                  <label class="check"><input type="checkbox" value="Heart" /> Heart</label>
+                  <label class="check"><input type="checkbox" value="Lungs" /> Lungs</label>
+                  <label class="check"><input type="checkbox" value="Pancreas" /> Pancreas</label>
+                  <label class="check"><input type="checkbox" value="Corneas" /> Corneas</label>
+                  <label class="check"><input type="checkbox" value="Any organ needed" /> Any organ</label>
+                </div>
+              </div>
+              <div class="field">
+                <label for="oCity">City</label>
+                <input type="text" id="oCity" placeholder="e.g. Bangalore" required />
+              </div>
+              <label class="check">
+                <input type="checkbox" id="oAck" required />
+                <span>I understand this is a community pledge list, and my family will be informed about my decision.</span>
+              </label>
+              <button type="submit" class="btn btn-primary btn-block">
+                <i class="fas fa-heart"></i> Pledge Now
+              </button>
+              <p class="form-note" id="organFormNote"></p>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== STATS ===================== -->
+      <section class="section" id="stats">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">Community snapshot</p>
+            <h2>Donor stats</h2>
+            <p class="section-sub">
+              A live look at who's registered, updated every time someone joins.
+            </p>
+          </div>
+
+          <div class="stats-grid">
+            <div class="card stat-card">
+              <h3><i class="fas fa-tint"></i> Blood group distribution</h3>
+              <div class="bar-chart" id="bloodChart"></div>
+            </div>
+            <div class="card stat-card">
+              <h3><i class="fas fa-map-marker-alt"></i> Top cities</h3>
+              <div class="city-list" id="cityList"></div>
+            </div>
+          </div>
+
+          <div class="compat card">
+            <h3><i class="fas fa-exchange-alt"></i> Who can receive what</h3>
+            <div class="compat-table-wrap">
+              <table class="compat-table">
+                <thead>
+                  <tr>
+                    <th>Blood group</th>
+                    <th>Can donate to</th>
+                    <th>Can receive from</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>O-</td><td>Everyone</td><td>O-</td></tr>
+                  <tr><td>O+</td><td>O+, A+, B+, AB+</td><td>O+, O-</td></tr>
+                  <tr><td>A-</td><td>A+, A-, AB+, AB-</td><td>A-, O-</td></tr>
+                  <tr><td>A+</td><td>A+, AB+</td><td>A+, A-, O+, O-</td></tr>
+                  <tr><td>B-</td><td>B+, B-, AB+, AB-</td><td>B-, O-</td></tr>
+                  <tr><td>B+</td><td>B+, AB+</td><td>B+, B-, O+, O-</td></tr>
+                  <tr><td>AB-</td><td>AB+, AB-</td><td>AB-, A-, B-, O-</td></tr>
+                  <tr><td>AB+</td><td>AB+</td><td>Everyone</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="site-footer">
+      <div class="wrap footer-grid">
+        <div>
+          <a href="#home" class="brand">
+            <span class="brand-mark">+</span>
+            <span class="brand-name">Life<span>Link</span></span>
+          </a>
+          <p class="footer-about">
+            A student-built community network for blood and organ donation.
+            Built with care, meant to connect real people.
+          </p>
+        </div>
+        <div>
+          <h4>Quick links</h4>
+          <a href="#register">Register</a>
+          <a href="#donors">Find Donors</a>
+          <a href="#requests">Emergency Requests</a>
+          <a href="#organs">Organ Pledge</a>
+        </div>
+        <div>
+          <h4>Good to know</h4>
+          <a href="https://www.notto.gov.in/" target="_blank" rel="noopener">NOTTO — National Organ Portal</a>
+          <a href="https://www.eraktkosh.in/" target="_blank" rel="noopener">eRaktKosh — Blood Bank Info</a>
+        </div>
+      </div>
+      <div class="wrap footer-bottom">
+        <p>© <span id="year"></span> LifeLink · Made for the love of helping · 🩸</p>
+      </div>
+    </footer>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+

@@ -22,6 +22,11 @@ A personal portfolio website built with HTML, CSS, and JavaScript.
 - Sustainable Medicine Network (web app)
 - [Live Site](https://pillpal-network-xs0c.onrender.com/)
 
+### 🩸 LifeLink — Blood & Organ Donation System
+- Community web app connecting blood donors, organ pledgers and urgent requests
+- Donor registration, find donors (blood group + city), 48h emergency requests, organ pledges & live stats
+- [Demo](projects/blood-organ-donation/index.html)
+
 ## Structure
 
 ```
@@ -30,7 +35,9 @@ my-portfolio/
 ├── index.css            # Styles
 ├── README.md
 ├── thankyou.html
-└── ml-projects/
-    ├── spam-classifier/
-    ├── digit-recognizer/
-    └── password-checker/
+├── ml-projects/
+│   ├── spam-classifier/
+│   ├── digit-recognizer/
+│   └── password-checker/
+└── projects/
+    └── blood-organ-donation/   # LifeLink web app (HTML/CSS/JS)
