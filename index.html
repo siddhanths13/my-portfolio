@@ -1,447 +1,300 @@
-r<!DOCTYPE html>
+<the imange !DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Portfolio | Beginner</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siddhanth S | Interactive Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body class="min-h-screen relative overflow-x-hidden">
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Animated Background Canvas & Cursor -->
+    <canvas id="bg-canvas"></canvas>
+    <div class="cursor-glow" id="cursor"></div>
 
-    <!-- Icons -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-
-    <!-- Scroll animation -->
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-
-    <!-- Css File -->
-    <link rel="stylesheet" href="index.css" />
-  </head>
-
-  <body>
-    <!-- Animated Background -->
-    <div class="animated-bg"></div>
-
-    <!-- Animated Grid -->
-    <div class="animated-grid"></div>
-
-    <!-- Animated Circles -->
-    <div class="animated-circles">
-      <div class="circle circle-1"></div>
-      <div class="circle circle-2"></div>
-      <div class="circle circle-3"></div>
-      <div class="circle circle-4"></div>
-      <div class="circle circle-5"></div>
-    </div>
-
-    <!-- Floating Shapes -->
-    <div class="floating-shapes">
-      <div class="shape shape-1"></div>
-      <div class="shape shape-2"></div>
-      <div class="shape shape-3"></div>
-      <div class="shape shape-4"></div>
-      <div class="shape shape-5"></div>
-      <div class="shape shape-6"></div>
-    </div>
-
-    <!-- Animated Lines -->
-    <div class="animated-lines">
-      <div class="line line-1"></div>
-      <div class="line line-2"></div>
-      <div class="line line-3"></div>
-      <div class="line line-4"></div>
-    </div>
-
-    <!-- Particles -->
-    <div class="particles">
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-    </div>
-
-    <div class="container">
-      <!-- ===================== HERO ===================== -->
-      <div class="hero">
-        <nav>
-          <h2 class="logo">Portfo<span>lio</span></h2>
-          <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About Me</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#projects">Projects</a></li>
-          </ul>
-          <a href="#contact" class="btn">Contact Me</a>
+    <!-- Navigation Bar -->
+    <header class="site-header">
+        <nav class="glass-card nav">
+            <span class="logo animated-gradient-text">PORTFOLIO</span>
+            <div class="nav-links">
+                <a href="#about">About</a>
+                <a href="#skills">Skills</a>
+                <a href="#projects">Projects</a>
+            </div>
+            <a href="#contact" class="btn-connect">CONNECT</a>
         </nav>
+    </header>
 
-        <div class="content">
-          <h4 data-aos="fade-up" data-aos-anchor-placement="top-bottom">
-            Hello, my name is
-          </h4>
-          <h1 data-aos="fade-up" data-aos-anchor-placement="top-bottom">
-            Siddhanth S<span>.</span>
-          </h1>
-          <h3 data-aos="fade-up" data-aos-anchor-placement="top-bottom">
-            I'm a student pursuing my B.Tech degree in PES
-            University, Bangalore.
-          </h3>
-          <div class="cta-buttons">
-            <a href="#projects" class="btn primary">View My Work</a>
-            <a href="#contact" class="btn outline">Hire Me</a>
-          </div>
-        </div>
-
-        <div class="scroll-indicator">
-          <span></span>
-        </div>
-      </div>
-      <!--End of hero-->
-
-      <!-- ===================== ABOUT ===================== -->
-      <section class="about" id="about">
-        <div class="main">
-          <div class="about-text">
-            <h2 data-aos="fade-up" data-aos-anchor-placement="top-bottom">
-              About Me
-            </h2>
-            <h5 data-aos="fade-up" data-aos-anchor-placement="top-bottom">
-              <span>MAVERICK</span>
-            </h5>
-            <p data-aos="fade-up" data-aos-anchor-placement="top-bottom">
-              I am still a beginner in web development but I am very passionate
-              about it and I love to learn new technologies and skills.
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-inner">
+            <div class="hero-badge neon-pill">
+                ✦ Interactive Experience ✦
+            </div>
+<h1 class="hero-title">
+                Siddhanth <span class="animated-gradient-text">S</span>
+            </h1>
+            <p class="hero-subtitle">
+                2nd Year AIML Engineer at PES University, Bangalore — building immersive digital experiences where machine learning meets cutting-edge visual design.
             </p>
-            <button
-              type="button"
-              data-aos="fade-up"
-              data-aos-anchor-placement="top-bottom"
-              onclick="location.href='#contact';"
-            >
-              Let's Talk
-            </button>
-          </div>
+            <div class="hero-actions">
+                <a href="#projects" class="glass-card btn-explore">Explore Work <span class="arrow">→</span></a>
+            </div>
         </div>
-      </section>
-      <!-- End of About me -->
+    </section>
 
-      <!-- ===================== SKILLS ===================== -->
-      <section class="skills" id="skills">
-        <h2 data-aos="fade-up" data-aos-anchor-placement="top-bottom">
-          My Skills
-        </h2>
-        <div class="skills-container">
-          <div
-            class="skill-card"
-            data-aos="fade-up"
-            data-aos-anchor-placement="top-bottom"
-            data-aos-delay="0"
-          >
-            <div class="skill-icon">
-              <i class="fab fa-cuttlefish"></i>
+    <!-- About Section -->
+    <section id="about" class="section">
+        <h2 class="section-title">ABOUT <span class="animated-gradient-text">ME</span></h2>
+        <div class="about-card glass-card">
+            <div class="about-grid">
+                <div class="about-visual">
+                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop" alt="Creative computing" class="about-img float">
+                </div>
+                <div class="about-text">
+                    <h3 class="about-name font-heading">Hello, I'm <span class="animated-gradient-text">Siddhanth</span></h3>
+                    <p class="about-bio">
+                        I'm a passionate developer exploring the intersection of machine learning, web development, and creative design. I love turning bold ideas into polished, interactive products — from ML-powered tools to full community platforms.
+                    </p>
+                    <ul class="about-points">
+                        <li><i class="fas fa-code"></i> B.Tech student at PES University, Bangalore</li>
+                        <li><i class="fas fa-brain"></i> ML projects: classifiers, CNN, Random Forest</li>
+                        <li><i class="fas fa-heart"></i> Building tools that help communities</li>
+                    </ul>
+<div class="about-actions">
+                        <a href="#contact" class="btn-connect inline">Let's Talk</a>
+                        <a href="resume.png" download class="btn-connect inline outline">Download Resume <i class="fas fa-download"></i></a>
+                    </div>
+                </div>
             </div>
-            <h3>C/C++</h3>
-            <div class="skill-bar">
-              <div class="skill-progress" data-skill="85"></div>
-            </div>
-          </div>
-          <div
-            class="skill-card"
-            data-aos="fade-up"
-            data-aos-anchor-placement="top-bottom"
-            data-aos-delay="100"
-          >
-            <div class="skill-icon">
-              <i class="fab fa-python"></i>
-            </div>
-            <h3>Python</h3>
-            <div class="skill-bar">
-              <div class="skill-progress" data-skill="80"></div>
-            </div>
-          </div>
-          <div
-            class="skill-card"
-            data-aos="fade-up"
-            data-aos-anchor-placement="top-bottom"
-            data-aos-delay="200"
-          >
-            <div class="skill-icon">
-              <i class="fas fa-database"></i>
-            </div>
-            <h3>SQL</h3>
-            <div class="skill-bar">
-              <div class="skill-progress" data-skill="75"></div>
-            </div>
-          </div>
-          <div
-            class="skill-card"
-            data-aos="fade-up"
-            data-aos-anchor-placement="top-bottom"
-            data-aos-delay="300"
-          >
-            <div class="skill-icon">
-              <i class="fab fa-java"></i>
-            </div>
-            <h3>Java</h3>
-            <div class="skill-bar">
-              <div class="skill-progress" data-skill="70"></div>
-            </div>
-          </div>
-          <div
-            class="skill-card"
-            data-aos="fade-up"
-            data-aos-anchor-placement="top-bottom"
-            data-aos-delay="400"
-          >
-            <div class="skill-icon">
-              <i class="fas fa-code"></i>
-            </div>
-            <h3>Web Development</h3>
-            <div class="skill-bar">
-              <div class="skill-progress" data-skill="75"></div>
-            </div>
-          </div>
         </div>
-      </section>
-      <!-- End of Skills -->
+    </section>
 
-      <!-- ===================== PROJECTS ===================== -->
-      <section class="projects" id="projects">
-        <h2 data-aos="fade-up" data-aos-anchor-placement="top-bottom">
-          My Projects
-        </h2>
-<div class="projectBox">
-          <div
-            class="project-card"
-            data-aos="fade-up"
-            data-aos-anchor-placement="top-bottom"
-            data-aos-delay="0"
-          >
-            <div class="project-icon">
-              <i class="fas fa-robot"></i>
+    <!-- Skills Section -->
+    <section id="skills" class="section">
+        <h2 class="section-title">CORE <span class="animated-gradient-text">CAPABILITIES</span></h2>
+        <div class="skills-grid">
+            <div class="glass-card skill-card float" style="animation-delay: 0s;">
+                <div class="skill-num cyan">01</div>
+                <h3 class="font-heading">Frontend Architecture</h3>
+                <p>Crafting fluid, high-frame-rate user interfaces with motion physics and responsive layouts.</p>
             </div>
-<h3>Spam SMS Classifier</h3>
-            <p>ML project - Ensemble + TF-IDF (98.5% accuracy)</p>
-            <a
-              href="ml-projects/spam-classifier/demo/index.html"
-              class="project-link"
-              >View Project <i class="fas fa-arrow-right"></i
-            ></a>
-          </div>
-<div
-            class="project-card"
-            data-aos="fade-up"
-            data-aos-anchor-placement="top-bottom"
-            data-aos-delay="300"
-          >
-            <div class="project-icon">
-              <i class="fas fa-pills"></i>
+            <div class="glass-card skill-card float" style="animation-delay: 0.5s;">
+                <div class="skill-num pink">02</div>
+                <h3 class="font-heading">Machine Learning</h3>
+                <p>Text classification, CNN image recognition, and strength-prediction models with high accuracy.</p>
             </div>
-            <h3>PillPall Network</h3>
-            <p>Sustainable Medicine Network</p>
-            <a
-              href="https://pillpal-network-xs0c.onrender.com/"
-              class="project-link"
-              target="_blank"
-              >View Project <i class="fas fa-arrow-right"></i
-            ></a>
-          </div>
-          <div
-            class="project-card"
-            data-aos="fade-up"
-            data-aos-anchor-placement="top-bottom"
-            data-aos-delay="450"
-          >
-            <div class="project-icon">
-              <i class="fas fa-brain"></i>
+            <div class="glass-card skill-card float" style="animation-delay: 1s;">
+                <div class="skill-num purple">03</div>
+                <h3 class="font-heading">Full-Stack Systems</h3>
+                <p>Scalable backends, data pipelines, and real-time community platforms.</p>
             </div>
-            <h3>Handwritten Digit Recognizer</h3>
-            <p>ML project - CNN image classification (99% accuracy)</p>
-            <a
-              href="ml-projects/digit-recognizer/demo/index.html"
-              class="project-link"
-              >View Project <i class="fas fa-arrow-right"></i
-            ></a>
-          </div>
-          <div
-            class="project-card"
-            data-aos="fade-up"
-            data-aos-anchor-placement="top-bottom"
-            data-aos-delay="600"
-          >
-            <div class="project-icon">
-              <i class="fas fa-tint"></i>
-            </div>
-            <h3>LifeLink — Blood & Organ Donation</h3>
-            <p>Donor network - register, find donors, emergency requests &amp; organ pledges</p>
-            <a
-              href="projects/blood-organ-donation/index.html"
-              class="project-link"
-              >View Project <i class="fas fa-arrow-right"></i
-            ></a>
-          </div>
-          <div
-            class="project-card"
-            data-aos="fade-up"
-            data-aos-anchor-placement="top-bottom"
-            data-aos-delay="750"
-          >
-            <div class="project-icon">
-              <i class="fas fa-lock"></i>
-            </div>
-            <h3>Password Strength Checker</h3>
-            <p>ML project - Random Forest strength classifier</p>
-            <a
-              href="ml-projects/password-checker/demo/index.html"
-              class="project-link"
-              >View Project <i class="fas fa-arrow-right"></i
-            ></a>
-          </div>
         </div>
-      </section>
+    </section>
 
-      <!-- ===================== CONTACT ===================== -->
-      <div class="contact-form">
-<form
-          action="https://formsubmit.co/siddhanths130@gmail.com"
-          method="POST"
-          id="contact"
-        >
-          <input type="hidden" name="_subject" value="New message from your portfolio!" />
-          <input type="hidden" name="_captcha" value="false" />
-          <input type="hidden" name="_next" value="https://siddhanths13.github.io/thankyou.html" />
-          <h1 data-aos="fade-up" data-aos-anchor-placement="top-bottom">
-            Have a cool idea? Let's make it happen.
-          </h1>
-          <div class="name" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
-            <label for="name">Name</label>
-            <input
-              type="text"
-              name="Name"
-              placeholder="Enter Your Name"
-              required
-            />
-          </div>
-          <div class="email" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
-            <label for="email">Email</label>
-            <input
-              type="email"
-              name="email"
-              id="emailid"
-              placeholder="Enter Your Email"
-              required
-            />
-          </div>
-          <div class="textarea" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
-            <label for="message">Message</label>
-            <textarea
-              name="message"
-              id="message"
-              cols="20"
-              rows="6"
-              placeholder="Enter Your Message"
-            ></textarea>
-          </div>
-          <button type="submit" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
-            REACH OUT
-          </button>
-        </form>
-      </div>
-      <!-- Contact Page -->
+    <!-- Projects Section -->
+    <section id="projects" class="section">
+        <h2 class="section-title">MY <span class="animated-gradient-text">PROJECTS</span></h2>
+        <div class="projects-grid">
+            <!-- Spam SMS Classifier -->
+            <div class="glass-card project-card">
+                <div class="project-cover">
+                    <img src="https://images.unsplash.com/photo-1484704849700-f032a568e944?w=600&auto=format&fit=crop" alt="Spam SMS Classifier">
+                    <div class="cover-overlay"><i class="fas fa-robot"></i></div>
+                </div>
+                <div class="project-body">
+                    <h3 class="font-heading">Spam SMS Classifier</h3>
+                    <p>ML project — Ensemble + TF-IDF (98.5% accuracy)</p>
+                    <a href="ml-projects/spam-classifier/demo/index.html" class="project-link">View Project <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
 
-      <!-- ===================== FOOTER ===================== -->
-      <footer>
-        <p data-aos="fade-up" data-aos-anchor-placement="top-bottom">
-          Siddhanth S | a Beginner
-        </p>
-        <p data-aos="fade-up" data-aos-anchor-placement="top-bottom">
-          siddhanths130@gmail.com
-        </p>
-        <div class="social" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
-          <a href="#"><i class="fab fa-facebook-f"></i></a>
-<a href="https://www.instagram.com/siddhanth13_"><i class="fab fa-instagram"></i></a>
-          <a href="https://github.com/siddhanths13"><i class="fab fa-github"></i></a>
+            <!-- PillPall Network -->
+            <div class="glass-card project-card">
+                <div class="project-cover">
+                    <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&auto=format&fit=crop" alt="PillPall Network">
+                    <div class="cover-overlay"><i class="fas fa-pills"></i></div>
+                </div>
+                <div class="project-body">
+                    <h3 class="font-heading">PillPall Network</h3>
+                    <p>Sustainable Medicine Network</p>
+                    <a href="https://pillpal-network-xs0c.onrender.com/" class="project-link" target="_blank">View Project <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Handwritten Digit Recognizer -->
+            <div class="glass-card project-card">
+                <div class="project-cover">
+                    <img src="https://images.unsplash.com/photo-1555255707-c07966088b7b?w=600&auto=format&fit=crop" alt="Digit Recognizer">
+                    <div class="cover-overlay"><i class="fas fa-brain"></i></div>
+                </div>
+                <div class="project-body">
+                    <h3 class="font-heading">Handwritten Digit Recognizer</h3>
+                    <p>ML project — CNN image classification (99% accuracy)</p>
+                    <a href="ml-projects/digit-recognizer/demo/index.html" class="project-link">View Project <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <!-- LifeLink -->
+            <div class="glass-card project-card">
+                <div class="project-cover">
+                    <img src="https://images.unsplash.com/photo-1615461066841-6116e61058f4?w=600&auto=format&fit=crop" alt="LifeLink Blood & Organ Donation">
+                    <div class="cover-overlay"><i class="fas fa-tint"></i></div>
+                </div>
+                <div class="project-body">
+                    <h3 class="font-heading">LifeLink — Blood & Organ Donation</h3>
+                    <p>Donor network — register, find donors, emergency requests & organ pledges</p>
+                    <a href="projects/blood-organ-donation/index.html" class="project-link">View Project <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Password Strength Checker -->
+            <div class="glass-card project-card">
+                <div class="project-cover">
+                    <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&auto=format&fit=crop" alt="Password Strength Checker">
+                    <div class="cover-overlay"><i class="fas fa-lock"></i></div>
+                </div>
+                <div class="project-body">
+                    <h3 class="font-heading">Password Strength Checker</h3>
+                    <p>ML project — Random Forest strength classifier</p>
+                    <a href="ml-projects/password-checker/demo/index.html" class="project-link">View Project <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
         </div>
-      </footer>
-      <!-- End of footer -->
-    </div>
-    <!-- End of container -->
+    </section>
 
-    <!-- Scroll animation -->
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <!-- Contact Section -->
+    <section id="contact" class="section contact-section">
+        <h2 class="section-title">GET IN <span class="animated-gradient-text">TOUCH</span></h2>
+        <div class="contact-card glass-card">
+            <h3 class="contact-heading font-heading">Have a cool idea? Let's make it happen.</h3>
+            <form action="https://formsubmit.co/siddhanths130@gmail.com" method="POST">
+                <input type="hidden" name="_subject" value="New message from your portfolio!">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_next" value="https://siddhanths13.github.io/thankyou.html">
+                <div class="field">
+                    <label for="name">Name</label>
+                    <input type="text" name="Name" id="name" placeholder="Enter Your Name" required>
+                </div>
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" placeholder="Enter Your Email" required>
+                </div>
+                <div class="field">
+                    <label for="message">Message</label>
+                    <textarea name="message" id="message" rows="6" placeholder="Enter Your Message"></textarea>
+                </div>
+                <button type="submit" class="btn-connect submit">REACH OUT</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p class="font-heading">Siddhanth S | a Beginner</p>
+        <p class="footer-mail">siddhanths130@gmail.com</p>
+        <div class="social">
+            <a href="https://www.instagram.com/siddhanth13_" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://github.com/siddhanths13" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="mailto:siddhanths130@gmail.com"><i class="fas fa-envelope"></i></a>
+        </div>
+    </footer>
+
     <script>
-      AOS.init({
-        offset: 200,
-        delay: 0,
-        duration: 1000,
-        easing: "ease-out-cubic",
-        once: true,
-      });
+        // Custom Glowing Cursor Effect
+        const cursor = document.getElementById('cursor');
+        window.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
 
-      // Animate skill bars on scroll
-      const observerOptions = { threshold: 0.5, rootMargin: "0px" };
+        // Dynamic Particle System Canvas
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
 
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const skillProgress = entry.target.querySelector(".skill-progress");
-            if (skillProgress) {
-              const skillLevel = skillProgress.getAttribute("data-skill");
-              skillProgress.style.width = skillLevel + "%";
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initParticles();
+        });
+
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.8;
+                this.vy = (Math.random() - 0.5) * 0.8;
+                this.radius = Math.random() * 2 + 1;
+                this.alpha = Math.random() * 0.5 + 0.2;
+                this.color = Math.random() > 0.5 ? '#00f0ff' : '#ff007f';
             }
-          }
-        });
-      }, observerOptions);
-
-      document.querySelectorAll(".skill-card").forEach((card) => {
-        observer.observe(card);
-      });
-
-      // Smooth scroll behavior
-      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-        anchor.addEventListener("click", function (e) {
-          e.preventDefault();
-          const target = document.querySelector(this.getAttribute("href"));
-          if (target) {
-            target.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-        });
-      });
-
-      // Navbar background on scroll
-      const nav = document.querySelector("nav");
-      window.addEventListener("scroll", () => {
-        if (window.scrollY > 50) {
-          nav.classList.add("scrolled");
-        } else {
-          nav.classList.remove("scrolled");
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) this.reset();
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.fill();
+                ctx.restore();
+            }
         }
-      });
+
+        let particles = [];
+        function initParticles() {
+            particles = [];
+            const count = Math.floor((width * height) / 15000);
+            for (let i = 0; i < count; i++) particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 120) {
+                        ctx.save();
+                        ctx.globalAlpha = (1 - dist / 120) * 0.15;
+                        ctx.strokeStyle = '#7f00ff';
+                        ctx.lineWidth = 0.8;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                }
+            }
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+
+        initParticles();
+        animate();
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                const t = document.querySelector(a.getAttribute('href'));
+                if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
     </script>
-  </body>
+</body>
 </html>
